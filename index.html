@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Retro Revivals — Pokémon 30th Celebration</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#111827;--muted:#6b7280;--accent:#e11d48;--accent2:#7c3aed;--line:#e5e7eb;--ok:#16a34a}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,#111827,#312e81);color:#fff;padding:22px 16px 18px;position:sticky;top:0;z-index:10;box-shadow:0 4px 18px #0002}
+h1{font-size:22px;margin:0 0 4px}header p{margin:0;color:#dbeafe;font-size:13px}
+.wrap{max-width:1100px;margin:auto;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:21px}.stat span{font-size:11px;color:var(--muted)}
+.controls{background:var(--card);padding:12px;border-radius:14px;border:1px solid var(--line);margin-bottom:14px}
+input,select,button{font:inherit}input,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:10px;background:#fff}
+.row{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 3px 10px #0000000a}
+.art{height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:15px;position:relative;
+background:radial-gradient(circle at 25% 20%,#fff 0 8%,transparent 9%),linear-gradient(145deg,#dbeafe,#ede9fe 48%,#fce7f3)}
+.art .ball{position:absolute;width:92px;height:92px;border-radius:50%;background:linear-gradient(#ef4444 0 48%,#111827 49% 53%,#fff 54%);box-shadow:0 5px 18px #0002;opacity:.22}
+.art .name{position:relative;font-weight:900;font-size:24px;line-height:1.05;text-shadow:0 2px 0 #fff;z-index:1}
+.art small{position:absolute;bottom:9px;right:10px;background:#111827dd;color:#fff;padding:4px 7px;border-radius:8px;font-size:10px;z-index:2}
+.body{padding:10px}.num{font-size:11px;color:var(--muted)}.title{font-weight:800;margin:2px 0 8px}
+label.check{display:flex;gap:7px;align-items:center;font-size:13px}label.check input{width:auto}
+.meta{display:flex;gap:5px;margin-top:8px}.tag{font-size:10px;padding:4px 6px;border-radius:999px;background:#f3f4f6;color:#374151}
+.owned{border-color:#86efac;box-shadow:0 0 0 2px #dcfce7 inset}
+.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,#e11d48,#7c3aed);width:0}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:28px 10px}
+.empty{padding:35px;text-align:center;color:var(--muted);grid-column:1/-1}
+.actions{display:flex;gap:7px;margin-top:9px}button{border:0;border-radius:10px;padding:10px 12px;cursor:pointer;background:#111827;color:#fff}
+button.alt{background:#eef2ff;color:#312e81}
+@media(max-width:500px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.art{height:205px}.art .name{font-size:19px}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🎴 Retro Revivals</h1>
+    <p>Pokémon TCG · 30th Celebration Collection</p>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stats">
+    <div class="stat"><b id="total">128</b><span>Main-set cards</span></div>
+    <div class="stat"><b id="owned">0</b><span>Cards owned</span></div>
+    <div class="stat"><b id="pct">0%</b><span>Complete</span></div>
+  </section>
+
+  <section class="controls">
+    <input id="search" placeholder="🔎 Search card name or number…">
+    <div class="row">
+      <select id="filter">
+        <option value="all">All cards</option>
+        <option value="missing">Missing only</option>
+        <option value="owned">Owned only</option>
+        <option value="pikachu">Pikachu cards</option>
+        <option value="ex">Pokémon ex</option>
+      </select>
+      <select id="sort">
+        <option value="number">Sort: number</option>
+        <option value="name">Sort: name</option>
+        <option value="owned">Sort: owned first</option>
+      </select>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="actions">
+      <button onclick="exportData()">Export collection</button>
+      <button class="alt" onclick="document.getElementById('file').click()">Import</button>
+      <input id="file" type="file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </section>
+
+  <section id="grid" class="grid"></section>
+</main>
+<footer>
+  Built for Retro Revivals · Your collection is saved on this device.<br>
+  30th Celebration launches worldwide September 16, 2026.
+</footer>
+
+<script>
+const cards = [{"n": 1, "name": "Exeggcute", "sub": ""}, {"n": 2, "name": "Alolan Exeggutor", "sub": ""}, {"n": 3, "name": "Volbeat", "sub": ""}, {"n": 4, "name": "Illumise", "sub": ""}, {"n": 5, "name": "Tropius", "sub": ""}, {"n": 6, "name": "Cherubi", "sub": ""}, {"n": 7, "name": "Cherrim", "sub": ""}, {"n": 8, "name": "Vivillon", "sub": ""}, {"n": 9, "name": "Vulpix", "sub": ""}, {"n": 10, "name": "Ninetales", "sub": ""}, {"n": 11, "name": "Moltres", "sub": ""}, {"n": 12, "name": "Ho-Oh", "sub": ""}, {"n": 13, "name": "Victini", "sub": ""}, {"n": 14, "name": "Reshiram", "sub": ""}, {"n": 15, "name": "Fuecoco ex", "sub": ""}, {"n": 16, "name": "Slowpoke", "sub": ""}, {"n": 17, "name": "Lapras", "sub": ""}, {"n": 18, "name": "Articuno", "sub": ""}, {"n": 19, "name": "Kyogre", "sub": ""}, {"n": 20, "name": "Palkia", "sub": ""}, {"n": 21, "name": "Greninja ex", "sub": ""}, {"n": 22, "name": "Wishiwashi", "sub": ""}, {"n": 23, "name": "Pikachu", "sub": "01/30"}, {"n": 24, "name": "Pikachu", "sub": "02/30"}, {"n": 25, "name": "Pikachu", "sub": "03/30"}, {"n": 26, "name": "Pikachu", "sub": "04/30"}, {"n": 27, "name": "Pikachu", "sub": "05/30"}, {"n": 28, "name": "Pikachu", "sub": "06/30"}, {"n": 29, "name": "Pikachu", "sub": "07/30"}, {"n": 30, "name": "Pikachu", "sub": "08/30"}, {"n": 31, "name": "Pikachu", "sub": "09/30"}, {"n": 32, "name": "Pikachu", "sub": "10/30"}, {"n": 33, "name": "Pikachu", "sub": "11/30"}, {"n": 34, "name": "Pikachu", "sub": "12/30"}, {"n": 35, "name": "Pikachu", "sub": "13/30"}, {"n": 36, "name": "Pikachu", "sub": "14/30"}, {"n": 37, "name": "Pikachu", "sub": "15/30"}, {"n": 38, "name": "Pikachu", "sub": "16/30"}, {"n": 39, "name": "Pikachu", "sub": "17/30"}, {"n": 40, "name": "Pikachu", "sub": "18/30"}, {"n": 41, "name": "Pikachu", "sub": "19/30"}, {"n": 42, "name": "Pikachu", "sub": "20/30"}, {"n": 43, "name": "Pikachu", "sub": "21/30"}, {"n": 44, "name": "Pikachu", "sub": "22/30"}, {"n": 45, "name": "Pikachu", "sub": "23/30"}, {"n": 46, "name": "Pikachu", "sub": "24/30"}, {"n": 47, "name": "Pikachu", "sub": "25/30"}, {"n": 48, "name": "Pikachu", "sub": "26/30"}, {"n": 49, "name": "Pikachu", "sub": "27/30"}, {"n": 50, "name": "Pikachu", "sub": "28/30"}, {"n": 51, "name": "Pikachu", "sub": "29/30"}, {"n": 52, "name": "Pikachu", "sub": "30/30"}, {"n": 53, "name": "Pikachu", "sub": "ex"}, {"n": 54, "name": "Pikachu", "sub": "ex"}, {"n": 55, "name": "Zapdos", "sub": ""}, {"n": 56, "name": "Zekrom", "sub": ""}, {"n": 57, "name": "Zeraora", "sub": ""}, {"n": 58, "name": "Toxel", "sub": ""}, {"n": 59, "name": "Toxtricity", "sub": ""}, {"n": 60, "name": "Toxtricity", "sub": ""}, {"n": 61, "name": "Morpeko", "sub": ""}, {"n": 62, "name": "Miraidon", "sub": ""}, {"n": 63, "name": "Mewtwo", "sub": ""}, {"n": 64, "name": "Mewtwo ex", "sub": ""}, {"n": 65, "name": "Mew", "sub": ""}, {"n": 66, "name": "Mew ex", "sub": ""}, {"n": 67, "name": "Marill", "sub": ""}, {"n": 68, "name": "Azumarill", "sub": ""}, {"n": 69, "name": "Espeon", "sub": ""}, {"n": 70, "name": "Espeon ex", "sub": ""}, {"n": 71, "name": "Sylveon ex", "sub": ""}, {"n": 72, "name": "Unown", "sub": ""}, {"n": 73, "name": "Drifloon", "sub": ""}, {"n": 74, "name": "Cresselia", "sub": ""}, {"n": 75, "name": "Chandelure", "sub": ""}, {"n": 76, "name": "Xerneas", "sub": ""}, {"n": 77, "name": "Comfey", "sub": ""}, {"n": 78, "name": "Cosmog", "sub": ""}, {"n": 79, "name": "Cosmoem", "sub": ""}, {"n": 80, "name": "Lunala", "sub": ""}, {"n": 81, "name": "Gimmighoul", "sub": ""}, {"n": 82, "name": "Groudon", "sub": ""}, {"n": 83, "name": "Lucario", "sub": ""}, {"n": 84, "name": "Seismitoad", "sub": ""}, {"n": 85, "name": "Lycanroc", "sub": ""}, {"n": 86, "name": "Koraidon", "sub": ""}, {"n": 87, "name": "Nidoran", "sub": ""}, {"n": 88, "name": "Nidorina", "sub": ""}, {"n": 89, "name": "Alolan Meowth", "sub": ""}, {"n": 90, "name": "Gengar ex", "sub": ""}, {"n": 91, "name": "Umbreon", "sub": ""}, {"n": 92, "name": "Umbreon ex", "sub": ""}, {"n": 93, "name": "Murkrow", "sub": ""}, {"n": 94, "name": "Scraggy", "sub": ""}, {"n": 95, "name": "Zorua", "sub": ""}, {"n": 96, "name": "Zoroark", "sub": ""}, {"n": 97, "name": "Deino", "sub": ""}, {"n": 98, "name": "Zweilous", "sub": ""}, {"n": 99, "name": "Hydreigon", "sub": ""}, {"n": 100, "name": "Yveltal", "sub": ""}, {"n": 101, "name": "Galarian Meowth", "sub": ""}, {"n": 102, "name": "Jirachi ex", "sub": ""}, {"n": 103, "name": "Dialga", "sub": ""}, {"n": 104, "name": "Ferrothorn", "sub": ""}, {"n": 105, "name": "Solgaleo", "sub": ""}, {"n": 106, "name": "Zacian", "sub": ""}, {"n": 107, "name": "Zamazenta", "sub": ""}, {"n": 108, "name": "Gholdengo", "sub": ""}, {"n": 109, "name": "Salamence ex", "sub": ""}, {"n": 110, "name": "Jangmo-o", "sub": ""}, {"n": 111, "name": "Hakamo-o", "sub": ""}, {"n": 112, "name": "Kommo-o", "sub": ""}, {"n": 113, "name": "Meowth", "sub": ""}, {"n": 114, "name": "Kangaskhan", "sub": ""}, {"n": 115, "name": "Ditto", "sub": ""}, {"n": 116, "name": "Eevee", "sub": ""}, {"n": 117, "name": "Eevee", "sub": ""}, {"n": 118, "name": "Eevee", "sub": ""}, {"n": 119, "name": "Snorlax", "sub": ""}, {"n": 120, "name": "Igglybuff", "sub": ""}, {"n": 121, "name": "Lugia", "sub": ""}, {"n": 122, "name": "Hisuian Zorua", "sub": ""}, {"n": 123, "name": "Hisuian Zoroark", "sub": ""}, {"n": 124, "name": "Minior", "sub": ""}, {"n": 125, "name": "Maushold", "sub": ""}, {"n": 126, "name": "Poke Pad", "sub": ""}, {"n": 127, "name": "Switch", "sub": ""}, {"n": 128, "name": "Ultra Ball", "sub": ""}];
+const key='retro-revivals-30c-v1';
+let state=JSON.parse(localStorage.getItem(key)||'{}');
+
+function save(){localStorage.setItem(key,JSON.stringify(state)); updateStats();}
+function updateStats(){
+  const owned=cards.filter(c=>state[c.n]?.owned).length;
+  document.getElementById('owned').textContent=owned;
+  document.getElementById('pct').textContent=Math.round(owned/cards.length*100)+'%';
+  document.getElementById('bar').style.width=(owned/cards.length*100)+'%';
+}
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function render(){
+  let list=[...cards];
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const f=document.getElementById('filter').value;
+  if(q) list=list.filter(c=>(c.name+' '+String(c.n).padStart(3,'0')+' '+c.sub).toLowerCase().includes(q));
+  if(f==='missing') list=list.filter(c=>!state[c.n]?.owned);
+  if(f==='owned') list=list.filter(c=>state[c.n]?.owned);
+  if(f==='pikachu') list=list.filter(c=>c.name==='Pikachu');
+  if(f==='ex') list=list.filter(c=>c.name.includes('ex'));
+  const s=document.getElementById('sort').value;
+  if(s==='name') list.sort((a,b)=>a.name.localeCompare(b.name)||a.n-b.n);
+  if(s==='owned') list.sort((a,b)=>(state[b.n]?.owned?1:0)-(state[a.n]?.owned?1:0)||a.n-b.n);
+  const grid=document.getElementById('grid');
+  if(!list.length){grid.innerHTML='<div class="empty">No cards found.</div>';return}
+  grid.innerHTML=list.map(c=>{
+    const x=state[c.n]||{};
+    const cls=x.owned?'card owned':'card';
+    const label=c.name==='Pikachu' ? 'Pikachu '+c.sub : c.name;
+    return `<article class="${cls}">
+      <div class="art">
+        <div class="ball"></div>
+        <div class="name">${esc(c.name)}</div>
+        <small>${String(c.n).padStart(3,'0')}/128</small>
+      </div>
+      <div class="body">
+        <div class="num">30C · ${String(c.n).padStart(3,'0')}/128</div>
+        <div class="title">${esc(label)}</div>
+        <label class="check"><input type="checkbox" ${x.owned?'checked':''} onchange="toggle(${c.n},this.checked)"> I own this</label>
+        <div class="meta">
+          <span class="tag">${c.name==='Pikachu'?'Pikachu subset':c.name.includes('ex')?'ex':'30th Celebration'}</span>
+          ${x.grade?`<span class="tag">Grade ${esc(x.grade)}</span>`:''}
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+function toggle(n,v){state[n]={...(state[n]||{}),owned:v};save();render();}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='retro-revivals-30th-collection.json';a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();render()}catch{alert('That file could not be imported.')}};r.readAsText(file);
+}
+document.getElementById('search').oninput=render;
+document.getElementById('filter').onchange=render;
+document.getElementById('sort').onchange=render;
+updateStats();render();
+</script>
+</body>
+</html>
