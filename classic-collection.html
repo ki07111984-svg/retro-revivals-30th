@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classic Collection | Retro Revivals</title>
+<meta name="description" content="Retro Revivals Pokémon 30th Celebration Classic Collection tracker">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+
+<a class="logo" href="index.html">
+<span class="pokeball"></span>
+
+<span class="brand">
+<span class="brand-name">RETRO REVIVALS</span>
+<span class="tag">BUY • SELL • TRADE • COLLECT</span>
+</span>
+</a>
+
+<nav class="nav">
+
+<a href="index.html">Home</a>
+
+<a href="main-set.html">
+Main Set<br>(128)
+</a>
+
+<a href="secret-rares.html">
+Secret Rares<br>(33)
+</a>
+
+<a class="active" href="classic-collection.html">
+Classic Collection<br>(30)
+</a>
+
+<a href="energy.html">
+Energy<br>(8)
+</a>
+
+<a href="my-collection.html">
+My Collection
+</a>
+
+<a href="about.html">
+About
+</a>
+
+</nav>
+
+</header>
+
+
+<section class="hero">
+
+<div class="hero-art hero-left"></div>
+
+<div class="hero-art hero-right"></div>
+
+<div class="hero-content">
+
+<div class="sparkles">
+✦ ✦
+</div>
+
+<h1>CLASSIC COLLECTION</h1>
+
+<h2>30 CLASSIC CARDS</h2>
+
+<p>
+30 iconic cards celebrating the history of the Pokémon Trading Card Game.
+<br>
+A special collection of classic favourites for collectors.
+</p>
+
+</div>
+
+</section>
+
+
+<main class="main">
+
+
+<div class="toolbar">
+
+
+<div class="control">
+
+<span class="search-icon">⌕</span>
+
+<input
+id="search"
+type="text"
+placeholder="Search Classic Collection..."
+>
+
+<span class="close">×</span>
+
+</div>
+
+
+<div class="control">
+
+<select>
+
+<option>All Types</option>
+
+<option>Pokémon</option>
+
+<option>Trainer</option>
+
+</select>
+
+</div>
+
+
+<div class="control">
+
+<select>
+
+<option>All Rarities</option>
+
+<option>Rare</option>
+
+<option>Ultra Rare</option>
+
+<option>Special</option>
+
+</select>
+
+</div>
+
+
+<div class="control">
+
+<select id="status">
+
+<option>All</option>
+
+<option>Owned</option>
+
+<option>Missing</option>
+
+</select>
+
+</div>
+
+
+<div class="control counter">
+
+<div>
+
+<strong>
+
+<span data-owned>0</span>
+/
+<span data-total>30</span>
+
+</strong>
+
+<small>
+Collected
+</small>
+
+</div>
+
+
+<div>
+
+<strong
+class="percent"
+data-percent>
+
+0%
+
+</strong>
+
+<small>
+Complete
+</small>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<div class="grid">
+
+
+<script>
+
+const classicCards = [
+
+["01","Pikachu (Base Set)"],
+["02","Charizard (Base Set)"],
+["03","Misty (Gym Heroes)"],
+["04","Erika's Jigglypuff (Gym Heroes)"],
+["05","Sneasel (Neo Genesis)"],
+
+["06","Shining Celebi (Neo Destiny)"],
+["07","Crystal Lugia (Aquapolis)"],
+["08","Delcatty (EX Ruby & Sapphire)"],
+["09","Dark Tyranitar (EX Team Rocket Returns)"],
+["10","Scizor ex (EX Unseen Forces)"],
+
+["11","Metagross δ (EX Delta Species)"],
+["12","Palkia LV.X (Great Encounters)"],
+["13","Uxie (Legends Awakened)"],
+["14","Crobat G (Platinum)"],
+["15","Gengar Prime (HS – Triumphant)"],
+
+["16","Darkrai & Cresselia LEGEND — Top"],
+["17","Darkrai & Cresselia LEGEND — Bottom"],
+["18","N (Noble Victories)"],
+["19","Rayquaza-EX (Dragons Exalted)"],
+["20","Genesect-EX (Plasma Blast)"],
+
+["21","Mega Gardevoir-EX (Primal Clash)"],
+["22","Greninja BREAK (BREAKpoint)"],
+["23","Solgaleo-GX (Sun & Moon)"],
+["24","Buzzwole-GX (Crimson Invasion)"],
+["25","Pikachu & Zekrom-GX (Team Up)"],
+
+["26","Zacian V (Sword & Shield)"],
+["27","Raikou (Vivid Voltage)"],
+["28","Mew VMAX (Fusion Strike)"],
+["29","Arceus VSTAR (Brilliant Stars)"],
+["30","Magikarp (Paldea Evolved)"]
+
+];
+
+
+document.write(
+
+classicCards.map(function(card){
+
+const id=card[0];
+
+const name=card[1];
+
+return `
+
+<article class="card">
+
+<label>
+
+<div class="card-art">
+
+<div class="placeholder">
+
+${name}
+
+</div>
+
+</div>
+
+
+<div class="card-meta">
+
+<span class="own-dot"></span>
+
+<span class="number">
+${id}
+</span>
+
+</div>
+
+
+<div class="name">
+${name}
+</div>
+
+
+<input
+type="checkbox"
+data-id="classic-${id}">
+
+</label>
+
+</article>
+
+`;
+
+}).join("")
+
+);
+
+</script>
+
+
+</div>
+
+
+<div class="actions">
+
+<a
+class="btn"
+href="index.html">
+
+‹ &nbsp; Back to Home
+
+</a>
+
+
+<button
+class="btn gold"
+onclick="exportCollection()">
+
+⇩ &nbsp; Export My Collection
+
+</button>
+
+</div>
+
+
+</main>
+
+
+<footer class="footer">
+
+
+<div class="footer-grid">
+
+
+<div>
+
+<h3>
+RETRO REVIVALS
+</h3>
+
+<p>
+Retro Games • Pokémon • Toys • Collectables
+</p>
+
+<div class="script">
+Relive the Past, Collect the Future
+</div>
+
+</div>
+
+
+<div>
+
+<h3 class="heading">
+Quick Links
+</h3>
+
+<a href="main-set.html">
+Main Set (128)
+</a>
+
+<a href="secret-rares.html">
+Secret Rares (33)
+</a>
+
+<a href="classic-collection.html">
+Classic Collection (30)
+</a>
+
+<a href="energy.html">
+Energy (8)
+</a>
+
+</div>
+
+
+<div>
+
+<h3 class="heading">
+Follow Us
+</h3>
+
+<div class="social">
+
+<span>f</span>
+<span>◎</span>
+<span>▶</span>
+<span>e</span>
+
+</div>
+
+<p>
+Buy • Sell • Trade • Collect
+</p>
+
+</div>
+
+
+<div>
+
+<h3 class="heading">
+Pokémon 30th Celebration
+</h3>
+
+<p>
+Celebrating 30 Years of Pokémon<br>
+1996 - 2026
+</p>
+
+<div class="script">
+Gotta Collect 'Em All!
+</div>
+
+</div>
+
+
+</div>
+
+</footer>
+
+
+<script>
+
+window.PAGE_TOTAL = 30;
+
+</script>
+
+
+<script src="app.js"></script>
+
+
+</body>
+</html>
